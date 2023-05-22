@@ -18,7 +18,7 @@
             run: |
               echo "Release Notes for $(git describe --abbrev=0 --tags)..$(git rev-parse --abbrev-ref HEAD):" > release-notes.md
               echo "" >> release-notes.md
-              git log --pretty=format:"- %s" $(git describe --abbrev=0 --tags)..HEAD >> release-notes.md
+              git log --pretty=format:"- %s" $(git describe --abbrev=0 --tags)..$(git rev-parse HEAD) >> release-notes.md
     
           - name: Commit Release Notes
             run: |
