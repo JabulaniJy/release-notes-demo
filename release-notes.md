@@ -1,3 +1,3 @@
 Release Notes for the latest commit:
 
-- without using tags
+- Merge branch 'main' of https://github.com/JabulaniJy/release-notes-demo
