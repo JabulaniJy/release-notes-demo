@@ -13,11 +13,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Check if release notes exist
+        id: check_release_notes
+        run: echo "::set-output name=exists::$(test -f release-notes.md && echo true || echo false)"
+
       - name: Generate Release Notes
         run: |
-          echo "Release Notes for the latest commit:" > release-notes.md
-          echo "" >> release-notes.md
-          git log --pretty=format:"- %s" -n 10 >> release-notes.md
+          echo "Release Notes for the latest commit:" > new-release-notes.md
+          echo "" >> new-release-notes.md
+          git log --pretty=format:"- %s" -n 10 >> new-release-notes.md
+
+      - name: Append to Release Notes
+        if: steps.check_release_notes.outputs.exists == 'true'
+        run: |
+          cat release-notes.md new-release-notes.md > updated-release-notes.md
+          mv updated-release-notes.md release-notes.md
+          rm new-release-notes.md
 
       - name: Stage Release Notes
         run: |
@@ -27,5 +38,5 @@ jobs:
 
       - name: Commit Release Notes
         run: |
-          git commit -m "Add release notes"
+          git commit -m "Update release notes"
           git push origin main
