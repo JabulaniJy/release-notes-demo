@@ -1,0 +1,31 @@
+ 
+name: Generate Release Notes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-release-notes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Generate Release Notes
+        run: |
+          echo "Release Notes for $(git describe --abbrev=0 --tags)..$(git rev-parse --abbrev-ref HEAD):" > release-notes.md
+          echo "" >> release-notes.md
+          echo "- New feature 1" >> release-notes.md
+          echo "- Bug fix 1" >> release-notes.md
+          echo "- Improvement 1" >> release-notes.md
+
+      - name: Commit Release Notes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add release-notes.md
+          git commit -m "Add release notes"
+          git push origin main
