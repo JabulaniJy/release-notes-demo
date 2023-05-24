@@ -1,2 +1,1 @@
-just a trial for changes
-test for develop branch
+testing if it will create a release when merged
