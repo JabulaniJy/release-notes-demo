@@ -15,20 +15,24 @@ jobs:
 
       - name: Get branch name
         id: branch_name
-        run: echo "::set-output name=branch_name::$(echo ${GITHUB_REF#refs/heads/})"
+        run: |
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "::set-output name=branch_name::${GITHUB_REF#refs/heads/}"
 
       - name: Check if branch is sprint
         id: check_branch
-        run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
+        run: |
+          echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
         uses: softprops/action-gh-release@v1
-        if: steps.check_branch.outputs.is_sprint_branch == '1'
+        if: env.IS_SPRINT_BRANCH == '1'
         with:
           files: |
             # Add files or directories to include in the release
-            release-notes.md
+            file-1.txt
+            file-2.txt
           tag_name: sprint-${{ github.sha }}
           name: Sprint Release - ${{ github.sha }}
           body: |
