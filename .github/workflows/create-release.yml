@@ -18,31 +18,21 @@ jobs:
 
       - name: Check if branch is sprint
         id: check_branch
-<<<<<<< HEAD
         run: |
           echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
         
-=======
-        run: echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
-
->>>>>>> ef7dbd0c3729d6c53e0f2ef3295835058cf8b484
       - name: Create release
         id: create_release
         uses: softprops/action-gh-release@v1
         if: env.IS_SPRINT_BRANCH == '1'
-        uses: softprops/action-gh-release@v1
-        if: env.IS_SPRINT_BRANCH == '1'
+
         with:
           files: |
             # Add files or directories to include in the release
             file-1.txt
             file-2.txt
-          files: |
-            # Add files or directories to include in the release
-            file-1.txt
-            file-2.txt
+
           tag_name: sprint-${{ github.sha }}
-          name: Sprint Release - ${{ github.sha }}
           name: Sprint Release - ${{ github.sha }}
           body: |
             This release is automatically created when a branch beginning with 'sprint' is merged into 'develop'.
