@@ -5,3 +5,5 @@ test develop for branch output
 
 testing again because first attempt didnt work
 
+testing if it will create a release when merged
+
