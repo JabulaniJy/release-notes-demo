@@ -8,4 +8,10 @@ Release Notes for the latest commit:
 
 - test develop work flowRelease Notes for the latest commit:
 
-- Sprint test (#3)
+- Sprint test (#3)Release Notes for the latest commit:
+
+- Develop (#10)Release Notes for the latest commit:
+
+- Update create-release.ymlRelease Notes for the latest commit:
+
+- Update create-release.yml
