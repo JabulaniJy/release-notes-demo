@@ -1,4 +1,4 @@
-name: Create Release on Sprint Branch Merge
+name: Create Tag on Merge
 
 on:
   push:
@@ -6,20 +6,12 @@ on:
       - develop
 
 jobs:
-  create_release:
+  create_tag:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
-
-
-      - name: Check if branch is sprint
-        id: check_branch
-        run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
-        
-      - name: Create release
-        id: create_release
 
       - name: Get branch name
         id: branch_name
@@ -27,28 +19,34 @@ jobs:
 
       - name: Get latest release tag
         id: latest_release
-
         run: |
-          if [[ "${{ steps.check_branch.outputs.is_sprint_branch }}" == '1' ]]; then
-            tag_name="sprint-${{ github.sha }}"
-            release_name="Sprint Release - ${{ github.sha }}"
-            release_body="This release is automatically created when a branch beginning with 'sprint' is merged into 'develop'."
-            
-            # Create the release using GitHub API
-            response=$(curl --request POST \
-              --url https://api.github.com/repos/${{ github.repository }}/releases \
-              --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              --header 'Content-Type: application/json' \
-              --data "{
-                \"tag_name\": \"$tag_name\",
-                \"name\": \"$release_name\",
-                \"body\": \"$release_body\",
-                \"draft\": false,
-                \"prerelease\": false
-              }")
-              
-            release_id=$(echo $response | jq -r '.id')
-            echo "Release created with ID: $release_id"
-          else
-            echo "Not a sprint branch. Skipping release creation."
-          fi
+          releases=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases)
+          latest_tag=$(echo "$releases" | jq -r '.[0].tag_name')
+          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
+
+      - name: Determine tag version
+        id: tag_version
+        run: |
+          prefix="${{ steps.branch_name.outputs.BRANCH_NAME }}"
+          latest_tag="${{ env.LATEST_TAG }}"
+          IFS='.' read -ra tag_parts <<< "$latest_tag"
+          major="${tag_parts[0]}"
+          minor="${tag_parts[1]}"
+          patch="${tag_parts[2]}"
+          case "$prefix" in
+            release) tag_version="$((major+1)).0.0" ;;
+            feature) tag_version="$major.$((minor+1)).0" ;;
+            bugfix) tag_version="$major.$minor.$((patch+1))" ;;
+            *) tag_version=skip ;;
+          esac
+          echo "TAG_VERSION=$tag_version" >> $GITHUB_ENV
+
+      - name: Create tag
+        id: create_tag
+        if: steps.tag_version.outputs.tag_version != 'skip'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag ${{ steps.tag_version.outputs.tag_version }}
+          git push origin ${{ steps.tag_version.outputs.tag_version }}

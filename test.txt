@@ -1,12 +1,6 @@
 
 testing again because first attempt didnt work
 test develop for branch output
-
-
 testing again because first attempt didnt work
-
-<<<<<<< .merge_file_vstrIB
-=======
+we keep trying
 testing if it will create a release when merged
-
->>>>>>> .merge_file_p4Id1N
