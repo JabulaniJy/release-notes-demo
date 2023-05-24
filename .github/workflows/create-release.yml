@@ -13,9 +13,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Get branch name
-        id: branch_name
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Echo branch name
+        run: echo "${GITHUB_REF##refs/heads/}"
 
       - name: Check if branch is sprint
         id: check_branch
