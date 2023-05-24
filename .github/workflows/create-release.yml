@@ -15,15 +15,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Echo branch name
-        run: echo "current branch is ${GITHUB_REF##refs/heads/}"
-        
+#add release notes
+      - name: Check if release notes exist
+        id: check_release_notes
+        run: echo "::set-output name=exists::$(test -f release-notes.md && echo true || echo false)"
+
+      - name: Generate Release Notes
+        run: |
+          echo "Release Notes for the latest commit:" > new-release-notes.md
+          echo "" >> new-release-notes.md
+          git log --pretty=format:"[%an]%n- %s" -n 10 >> new-release-notes.md
+
+      - name: Append to Release Notes
+        if: steps.check_release_notes.outputs.exists == 'true' && startsWith(github.ref, 'refs/heads/sprint')
+        run: |
+          cat release-notes.md new-release-notes.md > updated-release-notes.md
+          mv updated-release-notes.md release-notes.md
+          rm new-release-notes.md
+
+      - name: Stage Release Notes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add release-notes.md
+
+      - name: Commit Release Notes
+        run: |
+          git commit -m "Update release notes"
+          git push origin develop
+          
+# create release
       - name: Get branch name
         id: branch_name
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
-      - name: Echo from env
-        run: echo "${BRANCH_NAME}"
 
       - name: Create release
         id: create_release
@@ -32,8 +56,7 @@ jobs:
         with:
           files: |
             # Add files or directories to include in the release
-            file-1.txt
-            file-2.txt
+
           tag_name: sprint-${{ github.sha }}
           name: Sprint Release - ${{ github.sha }}
           body: |
