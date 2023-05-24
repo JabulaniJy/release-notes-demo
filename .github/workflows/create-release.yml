@@ -20,6 +20,9 @@ jobs:
         id: branch_name
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
+      - name: Echo from env
+        run: echo "${BRANCH_NAME}"
+
       - name: Check if branch is sprint
         id: check_branch
         run: echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
