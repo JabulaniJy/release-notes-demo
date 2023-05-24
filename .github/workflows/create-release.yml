@@ -3,7 +3,7 @@ name: Create Release on Sprint Branch Merge
 on:
   pull_request:
     branches:
-      - 'sprint*'
+      - 'develop*'
     types:
       - closed
 
@@ -32,7 +32,7 @@ jobs:
       - name: Create release
         id: create_release
         uses: softprops/action-gh-release@v1
-        if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'develop'
+        if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'sprint*'
         with:
           files: |
             # Add files or directories to include in the release
