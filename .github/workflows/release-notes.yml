@@ -13,6 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Get branch name
+        id: branch_name
+        run: echo "::set-output name=branch_name::${GITHUB_REF#refs/heads/}"
+
       - name: Check if branch is sprint
         id: check_branch
         run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
