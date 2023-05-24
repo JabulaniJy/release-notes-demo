@@ -1,0 +1,32 @@
+name: Create Release on Sprint Branch Merge
+
+on:
+  workflow_run:
+    branches: sprint/
+    types: completed
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Echo branch name
+        run: echo "current branch is ${GITHUB_REF##refs/heads/}"
+
+      - name: Get branch name
+        id: branch_name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Check current branch
+        run: |
+          echo "Current branch: $BRANCH_NAME"
+
+      - name: Create release
+        if: ${{ BRANCH_NAME == 'develop' }}
+        run: |
+          echo "Creating release..."
+          release=$(gh release create -a $BRANCH_NAME -t "Release $BRANCH_NAME")
+          echo "Release created: $release"
