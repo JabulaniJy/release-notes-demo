@@ -25,10 +25,6 @@ jobs:
       - name: Echo from env
         run: echo "${BRANCH_NAME}"
 
-      - name: Check if branch is sprint
-        id: check_branch
-        run: echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
-
       - name: Create release
         id: create_release
         uses: softprops/action-gh-release@v1
