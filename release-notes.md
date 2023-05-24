@@ -20,4 +20,6 @@ Release Notes for the latest commit:
 
 - Develop (#11)Release Notes for the latest commit:
 
-- Merge branch 'main' of https://github.com/JabulaniJy/release-notes-demo into test
+- Merge branch 'main' of https://github.com/JabulaniJy/release-notes-demo into testRelease Notes for the latest commit:
+
+- Develop (#12)
