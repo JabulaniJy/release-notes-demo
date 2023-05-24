@@ -19,7 +19,8 @@ jobs:
 
       - name: Check if branch is sprint
         id: check_branch
-        run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
+        run: |
+          echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
