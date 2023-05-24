@@ -18,4 +18,6 @@ Release Notes for the latest commit:
 
 - Update create-release.ymlRelease Notes for the latest commit:
 
-- Develop (#11)
+- Develop (#11)Release Notes for the latest commit:
+
+- Merge branch 'main' of https://github.com/JabulaniJy/release-notes-demo into test
