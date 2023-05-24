@@ -1,0 +1,32 @@
+name: Create Release on Sprint Branch Merge
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check if branch is sprint
+        id: check_branch
+        run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
+        
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: sprint-${{ github.sha }}
+          release_name: Sprint Release - ${{ github.sha }}
+          body: |
+            This release is automatically created when a branch beginning with 'sprint' is merged into 'develop'.
+          draft: false
+          prerelease: false
+        if: steps.check_branch.outputs.is_sprint_branch == '1'
