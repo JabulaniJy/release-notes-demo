@@ -1,5 +1,1 @@
-just a trial for changes
-test for develop branch
-workflow running but not working
-created a tag trying to see if it will work
-just trial
+testing if it will create a release when merged
