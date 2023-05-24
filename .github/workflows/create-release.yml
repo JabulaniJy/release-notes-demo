@@ -30,12 +30,19 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         if: env.IS_SPRINT_BRANCH == '1'
+        uses: softprops/action-gh-release@v1
+        if: env.IS_SPRINT_BRANCH == '1'
         with:
           files: |
             # Add files or directories to include in the release
             file-1.txt
             file-2.txt
+          files: |
+            # Add files or directories to include in the release
+            file-1.txt
+            file-2.txt
           tag_name: sprint-${{ github.sha }}
+          name: Sprint Release - ${{ github.sha }}
           name: Sprint Release - ${{ github.sha }}
           body: |
             This release is automatically created when a branch beginning with 'sprint' is merged into 'develop'.
