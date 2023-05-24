@@ -13,12 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+
       - name: Check if branch is sprint
         id: check_branch
         run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
         
       - name: Create release
         id: create_release
+
+      - name: Get branch name
+        id: branch_name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Get latest release tag
+        id: latest_release
+
         run: |
           if [[ "${{ steps.check_branch.outputs.is_sprint_branch }}" == '1' ]]; then
             tag_name="sprint-${{ github.sha }}"
