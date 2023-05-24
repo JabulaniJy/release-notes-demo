@@ -10,4 +10,6 @@ Release Notes for the latest commit:
 
 - Sprint test (#3)Release Notes for the latest commit:
 
-- Develop (#10)
+- Develop (#10)Release Notes for the latest commit:
+
+- Update create-release.yml
