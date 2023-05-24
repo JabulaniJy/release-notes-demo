@@ -1,9 +1,9 @@
 name: Create Release on Sprint Branch Merge
 
 on:
-  push:
-    branches:
-      - develop
+  workflow_run:
+    branches: sprint/
+    types: completed
 
 jobs:
   create_release:
