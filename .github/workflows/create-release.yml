@@ -16,12 +16,14 @@ jobs:
       - name: Get branch name
         id: branch_name
         run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
 
       - name: Check if branch is sprint
         id: check_branch
         run: |
-          echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')" >> $GITHUB_ENV
+          echo "IS_SPRINT_BRANCH=$(echo $BRANCH_NAME | grep -c '^sprint')"
+          echo "::set-env name=IS_SPRINT_BRANCH::$(echo $BRANCH_NAME | grep -c '^sprint')"
 
       - name: Create release
         id: create_release
