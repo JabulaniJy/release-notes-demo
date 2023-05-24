@@ -1,37 +1,42 @@
-name: Create Release on Sprint Branch Merge
+name: Generate Release Notes
 
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
-  create_release:
+  generate-release-notes:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Get branch name
-        id: branch_name
-        run: echo "::set-output name=branch_name::$(echo ${GITHUB_REF#refs/heads/})"
+      - name: Check if release notes exist
+        id: check_release_notes
+        run: echo "::set-output name=exists::$(test -f release-notes.md && echo true || echo false)"
 
-      - name: Check if branch is sprint
-        id: check_branch
-        run: echo "::set-output name=is_sprint_branch::$(echo ${GITHUB_REF#refs/heads/} | grep -c '^sprint')"
+      - name: Generate Release Notes
+        run: |
+          echo "Release Notes for the latest commit:" > new-release-notes.md
+          echo "" >> new-release-notes.md
+          git log --pretty=format:"- %s" -n 10 >> new-release-notes.md
 
-      - name: Create release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        if: steps.check_branch.outputs.is_sprint_branch == '1'
-        with:
-          files: |
-            # Add files or directories to include in the release
-            release-notes.md
-          tag_name: sprint-${{ github.sha }}
-          name: Sprint Release - ${{ github.sha }}
-          body: |
-            This release is automatically created when a branch beginning with 'sprint' is merged into 'develop'.
-          draft: false
-          prerelease: false
+      - name: Append to Release Notes
+        if: steps.check_release_notes.outputs.exists == 'true'
+        run: |
+          cat release-notes.md new-release-notes.md > updated-release-notes.md
+          mv updated-release-notes.md release-notes.md
+          rm new-release-notes.md
+
+      - name: Stage Release Notes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add release-notes.md
+
+      - name: Commit Release Notes
+        run: |
+          git commit -m "Update release notes"
+          git push origin main
