@@ -35,13 +35,13 @@ jobs:
           cat release-notes.md new-release-notes.md > updated-release-notes.md
           mv updated-release-notes.md release-notes.md
           rm new-release-notes.md
-          git add release-notes.md
+          git add release-notes.md new-release-notes.md
 
       - name: Stage Release Notes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add release-notes.md
+          git add release-notes.md new-release-notes.md
 
       - name: Check Git Status
         run: git status
