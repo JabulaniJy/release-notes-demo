@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-#--------------------------------------------------------------create release notes------------------------------------------------
+
       - name: Check if release notes exist
         id: check_release_notes
         run: echo "::set-output name=exists::$(test -f release-notes.md && echo true || echo false)"
@@ -34,17 +34,23 @@ jobs:
           rm new-release-notes.md
           git add release-notes.md
 
+      - name: Display Branch Name
+        run: git branch --show-current
+
       - name: Stage Release Notes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add release-notes.md
 
+      - name: Check Git Status
+        run: git status
+
       - name: Commit Release Notes
         run: |
           git commit -m "Update release notes"
           git push origin develop
-#---------------------------------------------------------------------create release----------------------------------------------
+
       - name: Get branch name
         id: branch_name
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
