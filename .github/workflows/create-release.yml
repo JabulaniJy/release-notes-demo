@@ -19,8 +19,11 @@ jobs:
         id: check_release_notes
         run: echo "::set-output name=exists::$(test -f release-notes.md && echo true || echo false)"
 
+      - name: Display Branch Name
+        run: git branch --show-current
+
       - name: Generate Release Notes
-        if: steps.check_release_notes.outputs.exists == 'true' && startsWith(github.ref, 'refs/heads/sprint')
+        if: steps.check_release_notes.outputs.exists == 'true'
         run: |
           echo "Release Notes for the latest commit:" > new-release-notes.md
           echo "" >> new-release-notes.md
@@ -33,9 +36,6 @@ jobs:
           mv updated-release-notes.md release-notes.md
           rm new-release-notes.md
           git add release-notes.md
-
-      - name: Display Branch Name
-        run: git branch --show-current
 
       - name: Stage Release Notes
         run: |
