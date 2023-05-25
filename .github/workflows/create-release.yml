@@ -23,14 +23,14 @@ jobs:
         run: git branch --show-current
 
       - name: Generate Release Notes
-        if: steps.check_release_notes.outputs.exists == 'true'
+        if: steps.check_release_notes.outputs.exists == 'true' && startsWith(github.event.pull_request.head.ref, 'sprint')
         run: |
           echo "Release Notes for the latest commit:" > new-release-notes.md
           echo "" >> new-release-notes.md
           git log --pretty=format:"[%an]%n- %s" -n 10 >> new-release-notes.md
 
       - name: Append to Release Notes
-        if: steps.check_release_notes.outputs.exists == 'true' && startsWith(github.ref, 'refs/heads/sprint')
+        if: steps.check_release_notes.outputs.exists == 'true' && startsWith(github.event.pull_request.head.ref, 'sprint')
         run: |
           cat release-notes.md new-release-notes.md > updated-release-notes.md
           mv updated-release-notes.md release-notes.md
