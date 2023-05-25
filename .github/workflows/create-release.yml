@@ -32,6 +32,8 @@ jobs:
           cat release-notes.md new-release-notes.md > updated-release-notes.md
           mv updated-release-notes.md release-notes.md
           rm new-release-notes.md
+          git add release-notes.md
+        
 
       - name: Stage Release Notes
         run: |
